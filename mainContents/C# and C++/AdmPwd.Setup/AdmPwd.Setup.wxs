@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" Name="Local admin password management solution" Language="1033" Version="!(bind.FileVersion.CSEBinary)" Manufacturer="Microsoft | Services" UpgradeCode="a6461f77-0833-48f5-a8a7-86c3bfb6887a">
+  <Product Id="*" Name="Local admin password management solution" Language="1033" Version="!(bind.FileVersion.CSEBinary)" Manufacturer="University of Turku" UpgradeCode="a6461f77-0833-48f5-a8a7-86c3bfb6887a">
 
     <Package InstallerVersion="300" Compressed="yes" Comments="Version: !(bind.FileVersion.CSEBinary)"/>
     <Property Id="ALLUSERS"><![CDATA[2]]></Property>
@@ -32,7 +32,7 @@
       <Feature Id="Management.PS" Title="PowerShell module" Level="10" Description="Installs Powershell module AdmPwd.PS and related files for command line management" AllowAdvertise="no">
         <ComponentGroupRef Id="PSGroup"/>
       </Feature>
-      <Feature Id="Management.ADMX" Title="GPO Editor templates" Level="10" Description="Installs ADMX templates for GPO editor. Typically need to be installed on machine where GPOs are edited" AllowAdvertise="no">
+      <Feature Id="Management.ADMX_Extended" Title="GPO Editor templates (Extended)" Level="10" Description="Installs the ADMX templates with the extended set of options for GPO editor. Typically need to be installed on machines where GPOs are edited." AllowAdvertise="no">
         <ComponentGroupRef Id="GPOTemplates"/>
       </Feature>
     </Feature>
@@ -166,11 +166,11 @@
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="GPOTemplates">
-      <Component Id="ADMX" Directory="dir.admx" Guid="47DF61E1-C3ED-4BEC-B0F0-A9F0A686B6C8">
-        <File Id="AdmPwd.admx" Source="$(var.SolutionDir)\_Other\Admx\AdmPwd.admx" />
+      <Component Id="ADMX_Extended" Directory="dir.admx" Guid="678266E1-E002-2AF7-A6EF-5B5665C8D72B">
+        <File Id="AdmPwdExtended.admx" Source="$(var.SolutionDir)\_Other\Admx\AdmPwdExtended.admx" />
       </Component>
-      <Component Id="ADML" Directory="dir.adml.en.us" Guid="FA3893A8-9607-4F27-8316-7E4AF0682346">
-        <File Id="AdmPwd.adml" Source="$(var.SolutionDir)\_Other\Admx\en-us\AdmPwd.adml" />
+      <Component Id="ADML_Extended" Directory="dir.adml.en.us" Guid="B3F88DEA-2DC4-24C0-50F9-1819B8DCDB65">
+        <File Id="AdmPwdExtended.adml" Source="$(var.SolutionDir)\_Other\Admx\en-us\AdmPwdExtended.adml" />
       </Component>
     </ComponentGroup>
   </Fragment>

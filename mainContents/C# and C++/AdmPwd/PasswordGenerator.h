@@ -1,6 +1,15 @@
 
 #pragma once
+
+//
+// Copyright (C) 2016 IT Services of the University of Turku
+//
+// This file is based on a version of the file "PasswordGenerator.h" that
+// was created by Jiri Formacek and published under Apache license version 2.0.
+//
+
 #include "stdafx.h"
+#include "IPasswordGenerator.h"
 extern wchar_t* DICTIONARY[MAX_PWD_COMPLEXITY];
 
 typedef struct _DictionaryItem {
@@ -8,7 +17,8 @@ typedef struct _DictionaryItem {
 	wchar_t *Value;
 } DictionaryItem;
 
-class PasswordGenerator
+// The basic password generator.
+class PasswordGenerator : public IPasswordGenerator
 {
 public:
 
@@ -77,6 +87,7 @@ public:
 	}
 
 
+	// See IPasswordGenerator::Generate().
 	TCHAR* Generate() {
 
 		int dict;
@@ -104,7 +115,7 @@ public:
 
 	//Current password complexity
 	__declspec(property(get = GET_PasswordComplexity)) unsigned int PasswordComplexity;
-	unsigned int GET_PasswordComplexity() {
+	unsigned int GET_PasswordComplexity() const {
 		return _complexity;
 	};
 

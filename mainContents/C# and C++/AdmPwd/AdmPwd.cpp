@@ -1,9 +1,19 @@
+
+//
+// Copyright (C) 2016 IT Services of the University of Turku
+//
+// This file is based on a version of the file "AdmPwd.cpp" that
+// was created by Jiri Formacek and published under Apache license version 2.0.
+//
+
 // AdmPwd.cpp : Defines the entry point for the DLL application.
 //
 #include "stdafx.h"
 #include "Constants.h"
 #include "Config.h"
+#include "IPasswordGenerator.h"
 #include "PasswordGenerator.h"
+#include "WordChainPasswordGenerator.h"
 #include "Computer.h"
 #include "AdminAccount.h"
 #include "AdmPwd.h"
@@ -93,8 +103,44 @@ ADMPWD_API DWORD APIENTRY ProcessGroupPolicy(
 			LogData.dwID = S_GET_ADMIN;
 			AdminAccount admin(config.AdminAccountName);
 
-			PasswordGenerator gen(config.PasswordComplexity, config.PasswordLength);
-			TCHAR *newPwd = gen.Generate();
+			TCHAR *newPwd = nullptr;
+			std::unique_ptr<IPasswordGenerator> gen(nullptr);
+			DWORD currentPwdGenTypeNo = config.SelectedPasswordGenerator;
+			const DWORD fallbackPwdGenTypeNo = PWD_GEN_TYPE_NO__BASIC;
+			bool pwdGenFailed = true;
+			do {
+				try
+				{
+					if (currentPwdGenTypeNo == PWD_GEN_TYPE_NO__BASIC)
+					{
+						gen.reset(  new PasswordGenerator(config.PasswordComplexity, config.PasswordLength)  );
+					}
+					else
+					{
+						gen.reset(  new WordChainPasswordGenerator(config.WcpMinLength, config.WcpWordCount,
+								config.WcpMinNumSeqLength, config.WcpWordListFileExpanded, config.WcpDelimiters,
+								config.WcpMinWordListLength)  );
+					}
+					newPwd = gen->Generate();
+					pwdGenFailed = false;
+				}
+				catch (HRESULT)
+				{
+					if (currentPwdGenTypeNo == fallbackPwdGenTypeNo)  throw;
+				}
+				catch (std::bad_alloc&)
+				{
+					if (currentPwdGenTypeNo == fallbackPwdGenTypeNo)
+						throw HRESULT_FROM_WIN32(ERROR_NOT_ENOUGH_MEMORY);
+				}
+				catch (std::exception&)
+				{
+					if (currentPwdGenTypeNo == fallbackPwdGenTypeNo)
+						throw HRESULT_FROM_WIN32(ERROR_UNIDENTIFIED_ERROR);
+				}
+
+				if (pwdGenFailed)  currentPwdGenTypeNo = fallbackPwdGenTypeNo;
+			} while (pwdGenFailed);
 			
 			//report new password and timestamp to AD
 			GetSystemTimeAsFileTime(&currentTime);

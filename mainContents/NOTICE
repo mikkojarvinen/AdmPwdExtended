@@ -1,0 +1,6 @@
+
+This project is based on Jiri Formacek's project "Local admin password management
+solution". The source form files of Formacek's project were retrieved in 2016-03-21
+as a zip-archive (named "Local admin password management solution.zip") from
+"https://code.msdn.microsoft.com/windowsapps/Solution-for-management-of-ae44e789",
+where it had been published under Apache license version 2.0.
