@@ -1,0 +1,435 @@
+<?XML version="1.0" standalone="yes" ?>
+<job>
+    <runtime>
+        <description>
+Registers GPO CSE with specific GPO
+
+Version history
+Version, Date, Author, Change
+1.0, 24.5.2010, Jiri Formacek, Initial version
+
+        </description>
+        <named
+            name = "GPO"
+            helpstring = "Name or GUID of GPO to register CSE with"
+            type = "string"
+            required = "true"
+        />
+        <named
+            name = "Unregister"
+            helpstring = "If specified, triues to unregister CSE instead of registering"
+            type = "boolean"
+            required = "false"
+        />
+        <example>
+Example:
+	cscript.exe Register_GPO.wsf /Name:GPO_name
+	cscript.exe Register_GPO.wsf /Name:{GPO_GUID}
+	cscript.exe Register_GPO.wsf /Name:{GPO_GUID} -u
+        </example>
+
+    </runtime>
+<?job debug="true"?>
+<script language="VBScript">
+   <![CDATA[
+   
+Option Explicit
+On Error Resume Next
+Const CSEString="[{D76B9641-3288-4f75-942D-087DE603E3EA}{D76B9641-3288-4f75-942D-087DE603E3EA}]"
+Const ADS_PROPERTY_CLEAR=1
+
+Dim gpoDN
+
+If Not wscript.arguments.named.exists("Name") Then
+	wscript.Arguments.ShowUsage
+	wscript.quit
+End If
+
+gpoDN=GetGpoDn(wscript.arguments.named("Name"))
+If gpoDN<>"" Then
+	RegisterCseWithGpo gpoDN, wscript.arguments.named.exists("Unregister")
+	If Err.Number<>0 Then
+		Wscript.Echo "Operation failed." & vbCrLf & "  Error: " & Err.Number & vbCrLf & "  Description: " & Err.Description
+	Else
+		Wscript.Echo "Finished successfully"
+	End If
+End If
+
+Function GetDefaultDomain()
+	GetDefaultDomain=""
+	
+	GetDefaultDomain=GetObject("LDAP://RootDSE").Get("defaultNamingContext")
+End Function
+
+Function GetGpoDn(name)
+	Dim oConn
+	Dim oCommand
+	Dim oRS
+	
+	Dim domainDN
+	Dim gposFound
+
+	GetGpoDn=""
+		
+	domainDN=GetDefaultDomain()
+	If domainDN="" Then
+		wscript.echo "Could not find DN of local domain" & vbCrLf & "  Error: " & err.number & vbCrLf & "  Description: " & err.description
+		err.clear
+		exit function
+	end if
+	
+	Set oConn = CreateObject("ADODB.Connection")
+	Set oCommand = CreateObject("ADODB.Command")
+	oConn.Provider = "ADsDSOObject"					
+	oConn.Open "Active Directory Provider"
+	Set oCommand.ActiveConnection = oConn
+	oCommand.Properties("Page Size") = 100
+	oCommand.Properties("Timeout") = 30 
+	oCommand.Properties("Searchscope") = 2
+	oCommand.Properties("Chase referrals") = 96
+	oCommand.Properties("Cache Results") = False 
+	
+	If Left(name,1) <> "{" Then
+	'	need to find GPO by name
+		oCommand.CommandText = "Select distinguishedname, displayName, cn from 'LDAP://" & domainDN  & "' where objectClass='groupPolicyContainer' and objectCategory='groupPolicyContainer' and displayName='" & name & "'"
+	Else
+		oCommand.CommandText = "Select distinguishedname, displayName, cn from 'LDAP://" & domainDN  & "' where objectClass='groupPolicyContainer' and objectCategory='groupPolicyContainer' and cn='" & name & "'"
+	End If
+
+	gposFound=0
+	
+	Set oRS = oCommand.Execute
+	If Not oRS.EOF Then
+		wscript.echo "Found those GPOs:"
+		Do While Not oRS.EOF
+			wscript.echo "  Name: " & oRS.Fields("displayName") & vbCrLf & "  GUID: " & oRS.Fields("cn")
+			GetGpoDn=oRS.Fields("distinguishedName")
+			oRS.MoveNext
+		  gposFound=gposFound+1
+		Loop
+		If gposFound>1 Then
+			GetGpoDn=""
+			Wscript.echo "Found more than 1 GPO, use GUID when specifying GPO to modify"
+		End If
+	Else
+		wscript.echo "No GPO found"
+	End If
+	
+	Set oRS=Nothing
+	Set oCommand=nothing
+	Set oConn=nothing
+End Function
+
+Function RegisterCseWithGpo(gpoDN, bUnregister) 
+	Dim oGPO
+	Dim gpoMachineExtensionNames
+	Dim gpoVersion
+	
+	Dim bNeedsUpdate
+	
+	Dim oINI
+	Dim arr
+	Dim a
+	
+	bNeedsUpdate=False
+	
+	Set oGPO=GetObject("LDAP://" & gpoDN)
+	gpoMachineExtensionNames=""
+	On Error Resume Next
+		gpoMachineExtensionNames=oGPO.Get("gPCMachineExtensionNames")
+	On Error Goto 0
+	If bUnregister Then
+		arr=Split(gpoMachineExtensionNames,CSEString,-1,1)
+		If Ubound(arr)>0 Then
+			wscript.echo "Extension registration found, unregistering:"
+			wscript.echo "  Orig. value: " & gpoMachineExtensionNames
+			gpoMachineExtensionNames=""
+			For Each a In arr
+				If Trim(a)<>"" Then
+					gpoMachineExtensionNames=gpoMachineExtensionNames + a
+				End If
+			Next
+			wscript.echo "  New value:   " & gpoMachineExtensionNames
+			If gpoMachineExtensionNames<>"" Then
+				oGPO.Put "gPCMachineExtensionNames", gpoMachineExtensionNames
+			Else
+				oGPO.PutEx ADS_PROPERTY_CLEAR, "gPCMachineExtensionNames", ""
+			End If
+			bNeedsUpdate=True
+		Else
+			wscript.echo "Extension registration not found, nothing to do..."
+		End If
+	Else
+		'register
+		If InStr(1,gpoMachineExtensionNames,CSEString,1)>0 Then
+			wscript.echo "Extension already registered, nothing to do..."
+		Else
+			wscript.echo "Extension registration not found, registering:"
+			wscript.echo "  Orig. value: " & gpoMachineExtensionNames
+			gpoMachineExtensionNames=gpoMachineExtensionNames & CSEString
+			wscript.echo "  New value:   " & gpoMachineExtensionNames
+			oGPO.Put "gPCMachineExtensionNames", gpoMachineExtensionNames
+			bNeedsUpdate=True
+		End If
+	End If
+	If bNeedsUpdate Then
+		wscript.echo "Updating GPO version"
+		Set oINI=New IniFile
+		oINI.FileName=oGPO.Get("gPCFileSysPath") & "\" & "gpt.ini"
+		oINI.Section="General"
+		oINI.Key="Version"
+		gpoVersion=oINI.Value
+		wscript.echo "SYSVOL version: " & gpoVersion
+		gpoVersion=oGPO.Get("versionNumber")
+		wscript.echo "AD version: " & gpoVersion
+		
+		gpoVersion=gpoVersion+1
+		wscript.echo "New version: " & gpoVersion
+		oGPO.Put "versionNumber", gpoVersion
+		oGPO.SetInfo
+		
+		oINI.Value=gpoVersion
+		Set oINI=Nothing
+	End If
+	
+	Set oGPO=nothing
+	
+End Function
+
+
+' Class manipulates ini files
+' Based on code by Frank-Peter Schultze (http://www.fpschultze.de)
+' Enhanced by Jiri Formacek, Microsoft Services
+' Typical usage:
+'		Dim oINI
+'		Dim MyVal		
+'		Set oINI=new IniFile
+'		oINI.FileName="test.ini"
+'		oINI.Section="My Section"
+'		oINI.Key="My Value"
+'		MyVal=oINI.Value
+'		Set oINI=nothing
+
+Class IniFile
+		Public Filename
+		Public Section
+		Public Key
+
+		Private objFso
+		Private objIni
+
+		'detection indexes
+		Private DetectedSectionIndex
+		Private DetectedKeyIndex
+
+
+		Private Sub Class_Initialize
+			Set objFso = WScript.CreateObject("Scripting.FileSystemObject")
+			'DetectNextSection
+		End Sub
+
+		Private Sub Class_Terminate
+			Set objFso = Nothing
+		End Sub
+
+		Public Sub StartDetection
+			DetectedSectionIndex=-1
+			DetectedKeyIndex=-1
+			Section=""
+			Key=""
+		End Sub
+		
+		Public Sub DetectNextSection
+			Dim arrContent, i, s
+			Dim start
+
+			arrContent = Split(Content, vbNewLine, -1, 1)
+			If DetectedSectionIndex>-1 Then
+				start=DetectedSectionIndex+1
+			Else 
+				start=LBound(arrContent)
+			End If
+			
+			If (UBound(arrContent) > -1) Then
+				For i = start To UBound(arrContent)
+					s = Trim(arrContent(i))
+					If Left(s, 1) = "[" And Right(s, 1) = "]" Then
+						DetectedSectionIndex = i
+						Section=Mid(s,2,Len(s)-2)
+						Exit For
+					End If
+				Next
+				If i>ubound(arrContent) Then Section=""	'no other section found
+			End If
+		End Sub 
+		
+		Public Sub DetectNextKey
+			Dim arrContent, i, s
+			Dim start
+			Dim pos
+		
+			If DetectedSectionIndex=-1 Then DetectNextSection
+			If DetectedSectionIndex=-1 Then Exit Sub
+			
+			arrContent = Split(Content, vbNewLine, -1, 1)
+			start=DetectedSectionIndex+1
+			
+			If DetectedKeyIndex+1>start Then start=DetectedKeyIndex+1
+			
+			If UBound(arrContent) > -1 Then
+				For i = start To UBound(arrContent)
+					s = Trim(arrContent(i))
+					pos=InStr(s, "=")
+					If pos > 0 Then
+						DetectedKeyIndex = i
+						Key=Left(s,pos-1)
+						key=Trim(Key)
+						Exit For
+					End If
+					If Left(s, 1) = "[" And Right(s, 1) = "]" Then	'next section
+						Key=""
+						Exit For
+					End If
+				Next
+				If i>ubound(arrContent) Then Key=""	'no other key found
+			End If
+		End Sub 
+		
+		Private Sub SectionStartEnd(ByRef lngSectionStart, ByRef lngSectionEnd)
+				Dim arrContent, i, s
+
+				lngSectionStart = -2
+				lngSectionEnd = -1
+				arrContent = Split(Content, vbNewLine, -1, 1)
+				If (UBound(arrContent) > -1) Then
+						If (Section <> "") Then
+								For i = LBound(arrContent) To UBound(arrContent)
+										s = Trim(arrContent(i))
+										If (LCase(s) = "[" & LCase(Section) & "]") Then
+												lngSectionStart = i
+										ElseIf (Left(s, 1) = "[") AND _
+												(Right(s, 1) = "]") AND _
+												(lngSectionStart >= 0) Then
+												lngSectionEnd = i - 1
+												Exit For
+										End If
+								Next
+								If (lngSectionStart >= 0) AND (lngSectionEnd < 0) Then
+										lngSectionEnd = UBound(arrContent)
+								End If
+						Else
+								lngSectionStart = -1
+								lngSectionEnd = UBound(arrContent)
+						End If
+						If (lngSectionStart > -2) Then
+								If (arrContent(lngSectionEnd) = "") Then
+										lngSectionEnd = lngSectionEnd - 1
+								End If
+						End If
+				End If
+
+		End Sub
+
+		Property Get Content
+				Const FOR_READING = 1
+
+				Content = ""
+				If objFso.FileExists(FileName) Then
+						Set objIni = objFso.OpenTextFile(Filename, FOR_READING)
+						If Not objIni.AtEndOfStream Then
+						    Content = objIni.ReadAll
+						End If
+						objIni.Close
+						Set objIni = Nothing
+				End If
+		End Property
+
+
+		Property Let Content(strContent)
+				Const OVERWRITE = True
+
+				Set objIni = objFso.CreateTextFile(Filename, OVERWRITE)
+				If Err.Number=53 Then Err.Clear	'FileNotFound error does not bother us - occurs on first run only
+				objIni.Write strContent
+				objIni.Close
+				Set objIni = Nothing
+		End Property
+
+
+		Property Get Value
+				Dim lngSectionStart, lngSectionEnd, lngIndex, arrContent
+				Dim strLine, i, s
+
+				Value = ""
+				SectionStartEnd lngSectionStart, lngSectionEnd
+				If (lngSectionStart > -2) Then
+						arrContent = Split(Content, vbNewLine, -1, 1)
+						For lngIndex = lngSectionStart + 1 To lngSectionEnd
+								strLine = arrContent(lngIndex)
+								i = InStr(1, strLine, "=", 1)
+								If (i > 0) Then
+										s = Left(strLine, i - 1)
+										s = Trim(s)
+										If (LCase(s) = LCase(Key)) Then
+												Value = Mid(strLine, i + 1)
+												Value = Trim(Value)
+												Exit For
+										End If
+								End If
+						Next
+				End If
+		End Property
+
+		Property Let Value(strValue)
+				Dim lngSectionStart, lngSectionEnd, arrContent
+				Dim lngIndex, lngIndex2, strContent, blnKeyNotFound
+				Dim strLine, i, s
+
+				SectionStartEnd lngSectionStart, lngSectionEnd
+				If (lngSectionStart < -1) Then
+						strContent = Content & vbNewLine _
+								& "[" & Section & "]" & vbNewLine _
+										& Key & "=" & strValue
+				Else
+						blnKeyNotFound = True
+						arrContent = Split(Content, vbNewLine, -1, 1)
+						For lngIndex = lngSectionStart + 1 To lngSectionEnd
+								strLine = arrContent(lngIndex)
+								i = InStr(1, strLine, "=", 1)
+								If (i > 0) Then
+										s = Left(strLine, i - 1)
+										s = Trim(s)
+										If (LCase(s) = LCase(Key)) Then
+												blnKeyNotFound = False
+												If (strValue <> "") Then
+														arrContent(lngIndex) = Key & "=" & strValue
+												Else
+														For lngIndex2 = lngIndex To UBound(arrContent) - 1
+																arrContent(lngIndex2) = arrContent(lngIndex2 + 1)
+														Next
+														Redim Preserve arrContent(UBound(arrContent) - 1)
+												End If
+												Exit For
+										End If
+								End If
+						Next
+						If blnKeyNotFound AND (strValue <> "") Then
+								Redim Preserve arrContent(UBound(arrContent) + 1)
+								For lngIndex = UBound(arrContent) To lngSectionEnd + 2 Step -1
+										arrContent(lngIndex) = arrContent(lngIndex - 1)
+								Next
+								arrContent(lngSectionEnd + 1) = Key & "=" & strValue
+						End If
+						strContent = arrContent(0)
+						For lngIndex = 1 To UBound(arrContent)
+								strContent = strContent & vbNewLine & arrContent(lngIndex)
+						Next
+				End If
+				Content = strContent
+		End Property
+
+End Class
+   
+   ]]>
+</script>
+</job>

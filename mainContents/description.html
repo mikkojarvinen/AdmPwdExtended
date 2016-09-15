@@ -1,0 +1,585 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head><link rel="stylesheet" type="text/css" href="https://i-msdn.sec.s-msft.com/Combined.css?resources=0:Header,0:HeaderFooterSprite,0:Header.NonMtps,1:LinkList;/Areas/Centers/Themes/StandardDevCenter/Content:0,/Areas/Epx/Themes/Base/Content:1&amp;amp;v=5CF4E24D59324FBE66CF8C9A49A3F942" xmlns="http://www.w3.org/1999/xhtml" />
+<link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+<link rel="stylesheet" type="text/css" href="https://i-msdn.sec.s-msft.com/Combined.css?resources=0:Footer,0:HeaderFooterSprite,0:Footer.NonMtps,1:FooterSock,1:LinkList;/Areas/Centers/Themes/StandardDevCenter/Content:0,/Areas/Epx/Themes/Base/Content:1&amp;amp;v=F8E8917DA8158DB3E7C6F07AA1FFC4F3" xmlns="http://www.w3.org/1999/xhtml" />
+<link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Local admin password management solution</title>
+        <link href="description/Galleries.css" type="text/css" rel="Stylesheet" /><link href="description/Layout.css" type="text/css" rel="Stylesheet" /><link href="description/Brand.css" type="text/css" rel="Stylesheet" />
+        <link href="https://i1.code.msdn.s-msft.com/content/common/iframedescription.css" rel="Stylesheet" type="text/css" />
+        <script src="https://i1.code.msdn.s-msft.com/content/common/offline.js" type="text/javascript"></script>
+        <style type="text/css">
+            #projectInfo {
+                overflow: auto;
+            }
+            #longDesc {
+                clear:both;
+                margin: 25px 0 10px 0;
+            }
+
+            #SampleIndexList{
+                margin-left: 15px;
+            }
+        </style>
+    </head>
+<body>
+    <div id="offlineDescription">
+        <h1>Local admin password management solution</h1>
+        <br/>
+        <div id="projectInfo">
+            <div class="section">
+                    <div class="itemBarLong tagsContainer">
+                        <label for="Technologies">Technologies</label>
+                        <div id="Technologies">
+                            Native Code, Windows Security, Win32, Windows SDK, Windows General, Group Policy, LDAP, WiX toolset
+                        </div>
+                    </div>
+                    <div class="itemBarLong tagsContainer">
+                        <label for="Topics">Topics</label>
+                        <div id="Topics">
+                            Security, Powershell, Group Policy development
+                        </div>
+                    </div>
+                <div class="itemBarLong">
+                    <label for="Platforms">Platforms</label>
+                    <div id="Platforms">
+                        Desktop
+                    </div>
+                </div>
+                <div class="itemBarLong">
+                    <label for="Requirements">Requirements</label>
+                    <div id="Requirements">
+                        
+                    </div>
+                </div>
+                <div class="itemBar">
+                    <label for="LastUpdated">Primary language</label>
+                    <div id="LastUpdated">en-US</div>
+                </div>
+                <div class="itemBar">
+                    <label for="LastUpdated">Updated</label>
+                    <div id="LastUpdated">1/2/2015</div>
+                </div>
+                <div class="itemBarLong">
+                    <label for="License">License</label>
+                    <div id="License">
+                        <a href="license.rtf">Apache License, Version 2.0</a></div>
+                </div>
+                <div class="itemBar">
+                    <div class="viewonlinecont">
+                        <a data-link="online" href="https://code.msdn.microsoft.com/Solution-for-management-of-ae44e789">View this sample online</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                   
+<script type="text/javascript">
+    function initializePage() {
+        var otherTabClass = 'otherTab';
+        var hiddenPreClass = 'hidden';
+
+        var htmlDecode = function(encodedData) {
+            var decodedData = "";
+            if (encodedData) {
+                var div = document.createElement('div');
+                div.innerHTML = encodedData;
+                decodedData = div.firstChild.nodeValue.replace( /\\r\\n/ig , '\r\n');
+            }
+            return decodedData;
+        };
+                
+        Galleries.iterateElem(Galleries.findElem(null, 'div', 'scriptcode'), function (index, scriptBlock) {
+            var titleElem = Galleries.findElem(scriptBlock, 'div', 'title')[0];
+            var labelElems = Galleries.findElem(titleElem, 'span');
+            if (labelElems.length == 0) {
+                labelElems = titleElem;
+            }
+            var languageSpans = Galleries.findElem(scriptBlock, 'span', 'hidden');
+            var pres = Galleries.findElem(scriptBlock, 'pre');
+            if (languageSpans.length > 0 && pres.length > 1) {
+                Galleries.iterateElem(labelElems, function(index, elem) {
+                    var codePre = pres[index];
+                    var labelSpan = elem;
+                    var languageSpan = languageSpans[index];
+                            
+                    elem.code = codePre.innerHTML.replace( /(\r(\n)?)|((\r)?\n)/ig , '\\r\\n');
+                            
+                    codePre.className = codePre.className.replace(hiddenPreClass, '');
+                            
+                    languageSpan.parentNode.removeChild(languageSpan);
+                });
+
+                pres = Galleries.findElem(scriptBlock, 'pre');
+                Galleries.iterateElem(labelElems, function(index, elem) {
+                    var codePre = pres[index];
+                    var labelSpan = elem;
+                    if (index == 0) {
+                        scriptBlock.activeTab = 0;
+                    }
+                    else {
+                        labelSpan.className += otherTabClass;
+                        codePre.className += hiddenPreClass;
+                    }
+                    Galleries.attachEventHandler(labelSpan, 'click', function(e) {
+                        var activeTab = scriptBlock.activeTab;
+                        labelElems[activeTab].className += otherTabClass;
+                        pres[activeTab].className += hiddenPreClass;
+
+                        codePre.className = codePre.className.replace(hiddenPreClass, '');
+                        labelSpan.className = labelSpan.className.replace(otherTabClass, '');
+                        scriptBlock.activeTab = index;
+                    });
+                });
+
+                var preview = Galleries.findElem(scriptBlock, 'div', 'preview');
+                if (preview.length == 0) {
+                    preview.push(pres[pres.length - 1]);
+                }
+                Galleries.iterateElem(preview, function(index, elem) {
+                    elem.parentNode.removeChild(elem);
+                });
+
+                if (window.clipboardData && clipboardData.setData) {
+                    var copyLink = document.createElement('a');
+                    copyLink.href = 'javascript:void(0);';
+                    copyLink.className = 'copyCode';
+                    copyLink.innerHTML = 'Copy code';
+                    Galleries.attachEventHandler(copyLink, 'click', function (e) {
+                        clipboardData.setData("Text", htmlDecode(labelElems[scriptBlock.activeTab].code));
+                        return false;
+                    });
+                    scriptBlock.insertBefore(copyLink, scriptBlock.childNodes[0]);
+                }
+            }
+        });
+    }
+
+    Galleries.onWindowLoad(function(){
+        initializePage();
+    });
+
+</script>
+<div id="longDesc">
+    
+<p><strong>Summary</strong></p>
+<div class="SectionText"></div>
+<p class="SectionText">This sample is a fully working solution that implements automatic management of&nbsp;password of builtin Administrator account on computers joined to domain.</p>
+<div class="SectionText"></div>
+<p class="SectionText">Out of box functionality on the platform (Group Policy Preferences) did not fulfill usual security requirements. Main problems with admin password management via GPO Preferences were as below, and because of those problems, the functionality
+ was made obsolete in OS:</p>
+<div class="SectionText"></div>
+<div class="SectionText">
+<ul>
+<li>Password is the same on many workstations </li><li>Password stored in GPO and transported over network is not encrypted, but&nbsp;obfuscated (and obfuscation algorithm is published on MSDN),&nbsp;so it is not secure solution
+</li></ul>
+</div>
+<p>Solution implemented by this sample does not have such weak points.</p>
+<p><strong>Note</strong>: Current version of solution stores passwords in confidential attribute in AD in clear text. I'm thinking on publishing version that would store passwords encrypted. Idea is as follows:</p>
+<ul>
+<li>AD schema is the same as current solution </li><li>powershell cmdlet creates key pair </li><li>file with public key is transported to clients (path to key file configurable ia GPO)
+</li><li>file with private key is kept centrally behind web service </li><li>powershell cmdlet retrieves encrypted password and calls web service that decrypts it with private key
+</li></ul>
+<p>Web service can be on premise or in Azure. Powershell does not need to be only client of the web service; alternative UI (web, .net form etc.) may be supported. If you're interested, or have better ideas how to support encryption, please let me know.</p>
+<p>&nbsp;</p>
+<p class="ReleaseHeader"><strong>Version history</strong></p>
+<p class="SectionHeader">UPDATE 2/1/2015 (5.1.0.0)</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd:</div>
+<ul>
+<li>
+<div class="SectionHeader">changed default searchFlags value for ms-MCS-AdmPwd to 904 - added flag that prevents storing changed value of attribute to domain controller audit log when detailed auditing is configured. Thanks to Adam Stasiniewicz for tip</div>
+</li></ul>
+</li><li>
+<div class="SectionHeader">ADMX:</div>
+<ul>
+<li>
+<div class="SectionHeader">Changed method of registration of CSE with GPO - now CSE gets automatically registered when relevant GPO settings are edited. As a result, cmdlets (Un)Register-AdmPwdWithGPO were removed as no longer needed. Instead, to allow solution
+ to be triggered on client side, it is necessary to turn it on in GPO:</div>
+<ul>
+<li>
+<div class="SectionHeader">See setting <em>Administrative Templates/AdmPwd/Enable local admin password management</em> - resulting policy
+<strong>must </strong>contain this setting as Enabled so as CSE was triggered and allowed to manage local admin password</div>
+</li><li>
+<div class="SectionHeader">Thanks to Mark Heitbrink for tip</div>
+</li></ul>
+</li></ul>
+</li><li>
+<div class="SectionHeader">AdmPwd.PS:</div>
+<ul>
+<li>
+<div class="SectionHeader">Removed cmdlets (Un)Register-AdmPwdWithGPO - see above for details</div>
+</li></ul>
+</li><li>
+<div class="SectionHeader">AdmPwd.Setup:</div>
+<ul>
+<li>
+<div class="SectionHeader">Installer is now capable of creating custom admin account during installation</div>
+<ul>
+<li>
+<div class="SectionHeader">Managed by installer variable CUSTOMADMINNAME: can be set to desired account name from command line or through MST transform</div>
+</li><li>
+<div class="SectionHeader">Account receives random complex password and is made member of local Administrators group</div>
+</li></ul>
+</li></ul>
+</li><li>
+<div class="SectionHeader">Solution upgraded to VS2013</div>
+</li><li>
+<div class="SectionHeader">Updated updated accordingly</div>
+</li></ul>
+<p class="SectionHeader">UPDATE 19/11/2014 (5.0.3.0)</p>
+<ul>
+<li>AdmPwd: Added protection against too long expiration time of password - when turned on, CSE does not allow longer expiration time than allowed by policy. When longer expiration time detected, password is changed immediately and expiration time is reset
+ according to policy </li><li>GPO templates updated to contain UI for turning on of this protection </li><li>Documentation updated accordingly </li></ul>
+<p class="SectionHeader">UPDATE 24/8/2014 (5.0.2.0)</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd: Removed unused event log messages</div>
+</li><li>
+<div class="SectionHeader">AdmPwd.PS: Added help to cmdlets</div>
+</li><li>
+<div class="SectionHeader">AdmPwd.Setup: slightly changed graphic in setup ui</div>
+</li><li>
+<div class="SectionHeader">Updated documentation accordingly</div>
+</li></ul>
+<p class="SectionHeader">UPDATE 13/8/2014 (5.0.1.0)</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd: Fixed bug when ERROR_NOT_FOUND reported on initial password change whan attributes in AD are empty</div>
+</li></ul>
+<p class="SectionHeader">UPDATE 6/8/2014 (5.0.0.0)</p>
+<p class="SectionHeader">Code redesign and rewrite. Removed dependency on COM/ADSI - replaced by pure LDAP and Windows API calls.</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd:</div>
+<ul>
+<li>
+<div class="SectionHeader">Added the option to turn off the functionality via GPO. This allows have CSE installed everywhere and manage only subset of machines</div>
+</li></ul>
+</li></ul>
+<p class="SectionHeader">UPDATE 9/6/2014 (4.0.9.0)</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd.PS:</div>
+<ul>
+<li>
+<div class="SectionHeader">Fixed bug&nbsp;in format specifier file causing incorrect ouptput of Register-AdmPwdWithGPO and Unregister-AdmPwdWithGPO cmdlets&nbsp;(thanks to Tom Ausburne for reporting)</div>
+</li></ul>
+</li><li>
+<div class="SectionHeader">Added Operations guide to documentation (thanks to Tom Ausburne for creation)</div>
+</li></ul>
+<p class="SectionHeader">UPDATE 25/5/2014 (4.0.8.0)</p>
+<ul>
+<li>AdmPwd.PS:
+<ul>
+<li>Added cmdlet Set-AdmPwdAuditing for easier setup of auditing and elimination of need for manual work in Windows UI
+</li><li>Added cmdlet&nbsp;Find-AdmPwdExtendedRights for easy analysis who has permission to read password
+</li></ul>
+</li><li>Updated documentation accordingly </li></ul>
+<p class="SectionHeader">UPDATE 8/3/2014 (4.0.7.0)</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd:</div>
+<ul>
+<li>
+<div class="SectionHeader">fixed bug when special characters in AD container name (thanks to Andrew Brinded for reporting)</div>
+</li></ul>
+</li></ul>
+<p class="SectionHeader">UPDATE 29/12/2013 (4.0.6.0)</p>
+<ul>
+<li>AdmPwd.PS:
+<ul>
+<li>Added support for delegating permissions on non-orgUnits </li><li>Added alias 'Identity' for identification of GPO and OU in relevant cmdlets </li></ul>
+</li><li>AdmPwd.Setup:
+<ul>
+<li>Fat client, PowerShell module and ADMX templates are now separate product features
+</li><li>Updated icon of UI and in Add/Remove Programs </li></ul>
+</li></ul>
+<p class="SectionHeader">UPDATE 25/9/2013 (4.0.4.0)</p>
+<ul>
+<li>
+<div class="SectionHeader">AdmPwd.PS: fixed bug in Update-AdmPwdADSchema that caused newly added schema attributed not to be added into may-Contain set of computer class, causing error when saving password to AD. To fix it, just run Update-AdmPwdADSchema
+ cmdlet from version 4.0.4.0 again</div>
+</li></ul>
+<p class="SectionHeader">UPDATE 14/9/2013 (4.0.3.0)</p>
+<ul>
+<li>AdmPwd.PS: new cmdlet Update-AdmPwdADSchema that performs AD&nbsp;schema update, so schema update via ldifde is no longer required
+</li><li>AdmPwd.Setup: Setup now also installs ADMX/ADML files as a part of Management tools
+</li><li>Updated documentation accordingly
+<div class="SectionHeader"></div>
+</li></ul>
+<p class="SectionHeader">UPDATE 29/7/2013 (4.0.2.0)</p>
+<ul>
+<li>AdmPwd: Fixed handle leak when generating new password </li></ul>
+<p class="SectionHeader">UPDATE 22/6/2013 (4.0.1.0)</p>
+<ul>
+<li>AdmPwd: Fixed regression that caused error FILE_NOT_FOUND in some scenarios. Thanks to Adam Simson and
+<span>A. Kanounnikoff&nbsp;</span>for reporting </li><li>AdmPwd: Extended logging </li><li>some minor code optimizations </li><li>AdmPwd.UI: icon for executable </li><li>Updated documentation accordingly </li></ul>
+<p class="SectionHeader">UPDATE 16/5/2013 (4.0.0.6)</p>
+<ul>
+<li>AdmPwd: Fixed bug &quot;Error FILE_NOT_FOUND during GPO update when no GPO settings configured&quot;. Thanks to Tuna Gezer for reporting
+</li></ul>
+<p class="SectionHeader">UPDATE 5/5/2013 (4.0.0.5)</p>
+<ul>
+<li>AdmPwd.Utils: Fixed bug when name of OU shorter than 3 characters. Thanks to Tomas Rydl for reporting
+</li></ul>
+<p class="SectionHeader">UPDATE 5/5/2013 (4.0.0.4)</p>
+<ul>
+<li>AdmPwd: added support for management of password of custom local admin account
+<ul>
+<li>Usage:
+<ul>
+<li>Configure name of admin account you want to manage via GPO (see updated ADMX)
+</li><li>if name of admin account not configured, solution will manage built-in admin account (even renamed)
+</li></ul>
+</li></ul>
+</li><li>Removed sample web page and custom installer from solution
+<ul>
+<li>Still can provide source code/binaries of those upon request </li></ul>
+</li><li>Changed structure of files: suporting files (AD schema definition, ADMX and Documentation now under folder _Other in source code)
+<ul>
+<li>Upon request also changed extra downloads to this article: downloads contain MSI installers (<span id="97059">Installers.zip</span>)
+</li></ul>
+</li><li>Updated ADMX to cover the capability of managing custom local account </li><li>Updated documentation accordingly </li></ul>
+<p class="SectionHeader">UPDATE 16/3/2013 (3.1.2.0)</p>
+<ul>
+<li>Added ADMX template (see _Other\<span id="77797">ADMX</span>)&nbsp;for management of configuration options of CSE via GPO
+</li></ul>
+<p>No code changes in this update</p>
+<p class="SectionHeader">UPDATE 9/3/2013 (3.1.2.0)</p>
+<ul>
+<li>Updated Technical specification document </li><li>Attached MSI installers directly to this article, so as they are easier available without the need to download source code
+</li></ul>
+<p>No code changes in this update</p>
+<p><strong>Important</strong>: Starting with next code update, solution will contain only the following components:</p>
+<ul>
+<li>CSE </li><li>Powershell module </li><li>Sample fat client </li><li>MSI Installers </li></ul>
+<p>Custom installer and sample web page will be removed from the solution and will not be maintained any longer.</p>
+<p class="SectionHeader">UPDATE 2/2/2013 (3.1.2.0)</p>
+<ul>
+<li><strong><strong>AdmPwd.UI</strong></strong>: Changed UI for password reset to be more user-friendly
+</li></ul>
+<p class="SectionHeader">UPDATE 19/1/2013 (3.1.1.0)</p>
+<ul>
+<li><strong>GPO CSE &#43; AdmPwd_Installer</strong>: Fixed unexpected increase of minimum required Windows version to 6.0. New minimum required Windows version is back to 5.1. Thanks to Saida Aziri for reporting
+</li></ul>
+<p class="SectionHeader">UPDATE 19/1/2013 (3.1.0.0)</p>
+<ul>
+<li>Added new projects:
+<ul>
+<li><strong>AdmPwd.UI</strong>: Simple WinForm app that allows reading and resetting of password. This is meant as alternative to Web application that is already in the project, without the complexities of configuring Kerberos constrained delegation
+</li><li><strong>AdmPwd.PS</strong>: Powershell module that allows reading and resetting password (so it is yet&nbsp;<br>
+another UI) plus automates configuration tasks that needed to be performed manually until now. See below for Powershell code sample how to use it, or download the sample script from attachment.
+</li><li><strong>AdmPwd.Utils</strong>: Shared library for AdmPwd.UI and AdmPwd.PS </li><li><strong>AdmPwd.Setup</strong>: Traditional MSI setup that innstall GPO CSE, AdmPwd.UI and AdmPwd.PS. It installs to %ProgramFiles%\AdmPwd. Setup is built using WiX toolset (http://www.wixtoolset.org/)
+</li></ul>
+</li><li>GPO CSE:
+<ul>
+<li>Changed registry path for configuration values to HKLM\Software\Microsoft Services\AdmPwd so as it would be better manageable via GPO
+</li></ul>
+</li><li>Updated documentation; document downloadable from attachments (see above) </li></ul>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>PowerShell</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">powershell</span>
+<pre class="hidden">import-module admpwd.ps
+#COMMON TASKS
+# get password of built-in admin on computer jiri-test.
+Get-AdmPwdPassword -ComputerName:jiri-test
+
+# request immediate change of built-in admin password on computer jiri-test
+Reset-AdmPwdPassword -ComputerName:jiri-test
+
+# ========
+#INSTALLATION TASKS
+#This command extends AD schema
+Update-AdmPwdADSchema
+
+#This command lists all security principals who are holders of All Extended Rights permission on containers in given container
+Find-AdmPwdExtendedRights -OrgUnit:AdmPwd
+
+# This command registers GPO CSE with given GPO.
+# GPO identity can be entered as displayName, GUID, or distinguishedName
+Register-AdmPwdWithGPO -GpoIdentity:AdmPwd
+
+# This command unregisters GPO CSE from given GPO.
+# GPO identity can be entered as displayName, GUID, or distinguishedName
+Unregister-AdmPwdWithGPO -GpoIdentity:AdmPwd
+
+# This command delegates SELF permission to read/write timestamp and write password on computer objects in given OU. This is required for GPO CSE to work properly
+# OrgUnit can be entered as name or distinguishedName
+Set-AdmPwdComputerSelfPermission -OrgUnit:admpwd
+
+# This commands delegated the right to read password and timestamp to given identity in given OU
+# OrgUnit can be entered as name or distinguishedName
+Set-AdmPwdReadPasswordPermission -OrgUnit:admPwd -AllowedPrincipals:MyDomain\MyIdentity
+
+# This commands delegated the right to reset password and timestamp to given identity in given OU
+# OrgUnit can be entered as name or distinguishedName
+Set-AdmPwdResetPasswordPermission -OrgUnit:admpwd -AllowedPrincipals:MyDomain\MyIdentity
+
+#This command sets up auditing of password reads
+Set-AdmPwdAuditing -Identity:AdmPwd -AuditedPrincipals:Everyone</pre>
+<div class="preview">
+<pre class="powershell">import<span class="powerShell__operator">-</span>module&nbsp;admpwd.<span class="powerShell__alias">ps</span>&nbsp;
+<span class="powerShell__com">#COMMON&nbsp;TASKS</span>&nbsp;
+<span class="powerShell__com">#&nbsp;get&nbsp;password&nbsp;of&nbsp;built-in&nbsp;admin&nbsp;on&nbsp;computer&nbsp;jiri-test.</span>&nbsp;
+Get<span class="powerShell__operator">-</span>AdmPwdPassword&nbsp;<span class="powerShell__operator">-</span>ComputerName:jiri<span class="powerShell__operator">-</span>test&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;request&nbsp;immediate&nbsp;change&nbsp;of&nbsp;built-in&nbsp;admin&nbsp;password&nbsp;on&nbsp;computer&nbsp;jiri-test</span>&nbsp;
+Reset<span class="powerShell__operator">-</span>AdmPwdPassword&nbsp;<span class="powerShell__operator">-</span>ComputerName:jiri<span class="powerShell__operator">-</span>test&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;========</span>&nbsp;
+<span class="powerShell__com">#INSTALLATION&nbsp;TASKS</span>&nbsp;
+<span class="powerShell__com">#This&nbsp;command&nbsp;extends&nbsp;AD&nbsp;schema</span>&nbsp;
+Update<span class="powerShell__operator">-</span>AdmPwdADSchema&nbsp;
+&nbsp;
+<span class="powerShell__com">#This&nbsp;command&nbsp;lists&nbsp;all&nbsp;security&nbsp;principals&nbsp;who&nbsp;are&nbsp;holders&nbsp;of&nbsp;All&nbsp;Extended&nbsp;Rights&nbsp;permission&nbsp;on&nbsp;containers&nbsp;in&nbsp;given&nbsp;container</span>&nbsp;
+Find<span class="powerShell__operator">-</span>AdmPwdExtendedRights&nbsp;<span class="powerShell__operator">-</span>OrgUnit:AdmPwd&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;This&nbsp;command&nbsp;registers&nbsp;GPO&nbsp;CSE&nbsp;with&nbsp;given&nbsp;GPO.</span>&nbsp;
+<span class="powerShell__com">#&nbsp;GPO&nbsp;identity&nbsp;can&nbsp;be&nbsp;entered&nbsp;as&nbsp;displayName,&nbsp;GUID,&nbsp;or&nbsp;distinguishedName</span>&nbsp;
+Register<span class="powerShell__operator">-</span>AdmPwdWithGPO&nbsp;<span class="powerShell__operator">-</span>GpoIdentity:AdmPwd&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;This&nbsp;command&nbsp;unregisters&nbsp;GPO&nbsp;CSE&nbsp;from&nbsp;given&nbsp;GPO.</span>&nbsp;
+<span class="powerShell__com">#&nbsp;GPO&nbsp;identity&nbsp;can&nbsp;be&nbsp;entered&nbsp;as&nbsp;displayName,&nbsp;GUID,&nbsp;or&nbsp;distinguishedName</span>&nbsp;
+Unregister<span class="powerShell__operator">-</span>AdmPwdWithGPO&nbsp;<span class="powerShell__operator">-</span>GpoIdentity:AdmPwd&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;This&nbsp;command&nbsp;delegates&nbsp;SELF&nbsp;permission&nbsp;to&nbsp;read/write&nbsp;timestamp&nbsp;and&nbsp;write&nbsp;password&nbsp;on&nbsp;computer&nbsp;objects&nbsp;in&nbsp;given&nbsp;OU.&nbsp;This&nbsp;is&nbsp;required&nbsp;for&nbsp;GPO&nbsp;CSE&nbsp;to&nbsp;work&nbsp;properly</span>&nbsp;
+<span class="powerShell__com">#&nbsp;OrgUnit&nbsp;can&nbsp;be&nbsp;entered&nbsp;as&nbsp;name&nbsp;or&nbsp;distinguishedName</span>&nbsp;
+Set<span class="powerShell__operator">-</span>AdmPwdComputerSelfPermission&nbsp;<span class="powerShell__operator">-</span>OrgUnit:admpwd&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;This&nbsp;commands&nbsp;delegated&nbsp;the&nbsp;right&nbsp;to&nbsp;read&nbsp;password&nbsp;and&nbsp;timestamp&nbsp;to&nbsp;given&nbsp;identity&nbsp;in&nbsp;given&nbsp;OU</span>&nbsp;
+<span class="powerShell__com">#&nbsp;OrgUnit&nbsp;can&nbsp;be&nbsp;entered&nbsp;as&nbsp;name&nbsp;or&nbsp;distinguishedName</span>&nbsp;
+Set<span class="powerShell__operator">-</span>AdmPwdReadPasswordPermission&nbsp;<span class="powerShell__operator">-</span>OrgUnit:admPwd&nbsp;<span class="powerShell__operator">-</span>AllowedPrincipals:MyDomain\MyIdentity&nbsp;
+&nbsp;
+<span class="powerShell__com">#&nbsp;This&nbsp;commands&nbsp;delegated&nbsp;the&nbsp;right&nbsp;to&nbsp;reset&nbsp;password&nbsp;and&nbsp;timestamp&nbsp;to&nbsp;given&nbsp;identity&nbsp;in&nbsp;given&nbsp;OU</span>&nbsp;
+<span class="powerShell__com">#&nbsp;OrgUnit&nbsp;can&nbsp;be&nbsp;entered&nbsp;as&nbsp;name&nbsp;or&nbsp;distinguishedName</span>&nbsp;
+Set<span class="powerShell__operator">-</span>AdmPwdResetPasswordPermission&nbsp;<span class="powerShell__operator">-</span>OrgUnit:admpwd&nbsp;<span class="powerShell__operator">-</span>AllowedPrincipals:MyDomain\MyIdentity&nbsp;
+&nbsp;
+<span class="powerShell__com">#This&nbsp;command&nbsp;sets&nbsp;up&nbsp;auditing&nbsp;of&nbsp;password&nbsp;reads</span>&nbsp;
+Set<span class="powerShell__operator">-</span>AdmPwdAuditing&nbsp;<span class="powerShell__operator">-</span>Identity:AdmPwd&nbsp;<span class="powerShell__operator">-</span>AuditedPrincipals:Everyone</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;UPDATE 16/11/2012</div>
+<ul>
+<li>Added document with technical specification of the solution - see file&nbsp;LocalAdmPwd_TechnicalSpecification_1v0.docx
+</li><li>Replaced obsolete/weak APIs (this means that solution does not work on Win 2000 any longer)
+</li><li>Added SAL notations </li><li>Binaries compiled with /MT switch, so as not to be dependent on VC&#43;&#43; 2012 redistributable
+</li></ul>
+<p class="SectionHeader">UPDATE 5/11/2012</p>
+<ul>
+<li><strong>GPO CSE</strong>:
+<ul>
+<li>Fixed bug when handling password age when configured value in registry outside of allowed boundaries
+</li></ul>
+</li></ul>
+<p class="SectionHeader">UPDATE 4/11/2012</p>
+<ul>
+<li>Solution moved to Visual Studio 2012 RTM </li><li><strong>GPO CSE</strong>:
+<ul>
+<li>Fixed minor bug in UpdateComputerAccount(). Thanks to&nbsp;Pascal Verbruggen for reporting
+</li><li>Password age is configurable via registry:<br>
+&nbsp;HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\{D76B9641-3288-4f75-942D-087DE603E3EA}\PasswordAgeDays (REG_DWORD)
+<ul>
+<li>Minimum: 1 </li><li>Maximum: 365 </li><li>Default: 30 </li></ul>
+</li></ul>
+</li><li>This is the last version that supports Windows 2000. I'm going to support WinXP/2003 and above in future versions of this solution, so as to be able to move to more secure APIs that are not available in Windows 2000.
+</li></ul>
+<p>UPDATE 21/8/2012</p>
+<ul>
+<li>Fixed attribute names in AdmPwd.Web\web.config </li></ul>
+<p class="SectionHeader">UPDATE 6/7/2012</p>
+<div class="SectionText">
+<ul>
+<li>Solution moved to Visual Studio 2012 RC </li><li><strong>GPO CSE</strong>:
+<ul>
+<li>Complexity of generated password is configurable via registry: HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\{D76B9641-3288-4f75-942D-087DE603E3EA}\PasswordComplexity (REG_DWORD)
+<ul>
+<li>1: Only large&nbsp; characters </li><li>2: Large characters &#43; numbers </li><li>3: Large characters &#43; numbers &#43; small characters </li><li>4 (default): Large characters &#43; numbers &#43; small characters &#43; special characters
+</li></ul>
+</li></ul>
+</li></ul>
+</div>
+<p class="SectionHeader">UPDATE 5/6/2012</p>
+<div class="SectionText">
+<ul>
+<li>Solution enhanced to be easier to customize and more package-like:
+<ul>
+<li>Easier customization: AD attribute schema names no longer in code; located here:
+<ul>
+<li>GPO CSE: string table in executable resources </li><li>Sample web page: web.config </li><li>Installer: string table in resources </li></ul>
+</li><li>Sample contains compiled binaries ready for deployment
+<ul>
+<li>Attribute names in compiled binaries are:
+<ul>
+<li>Password: <strong>ms-MCS-AdmPwd</strong> </li><li>Password expiration timestamp: <strong>ms-MCS-AdmPwdExpirationTime</strong> </li></ul>
+</li></ul>
+</li></ul>
+</li><li><strong>GPO CSE</strong>:
+<ul>
+<li>Length of generated password configurable via registry: HKLM\Software\Microsoft\Windows\CurrentVersion\Winlogon\GPExtensions\{D76B9641-3288-4f75-942D-087DE603E3EA}\PasswordLength (REG_DWORD)
+</li><li>Minimum/Default: 12&nbsp; </li><li>Maximum: 64 </li></ul>
+</li><li><strong>AdmPwd.Web</strong>:
+<ul>
+<li>Removed dependency on ADSI; current code relies on (my favorite) System.DirectoryServices.Protols
+</li><li>Forest name in web.config is optional; when not present, web detects own forest
+</li></ul>
+</li></ul>
+</div>
+<p class="SectionHeader">UPDATE 21/03/2012</p>
+<div class="SectionText">
+<ul>
+<li>Corrected typo in AdmPwd_SchemaUpdate.ldf - incorrect attribute names in dn of attributes
+</li></ul>
+</div>
+<p class="ReleaseHeader"><strong>Requirements for the solution</strong></p>
+<div class="SectionText">
+<p>Solution is designed to&nbsp;meet the following requirements:</p>
+<ul>
+<li>Password must be different on each workstation </li><li>Password must not be guessable from name of workstation, MAC addresss, etc. </li><li>There must be a way for eligible people (IT support staff) to easily know the password when necessary
+</li><li>Password management solution must scale to support thousands of workstations </li><li>Password management solution&nbsp; must be easily deployable and manageable </li><li>Password management mechanism must be resistant against tampering with </li><li>Password management solution&nbsp; must support renaming of builtin Administrator account
+</li><li>Password management solution must offer the mechanism for bulk password change when necessary
+</li><li>Solution must support Windows 2000 and above. For Vista and Win7, support of both x86 and amd64 platforms is required
+</li></ul>
+</div>
+<p class="ReleaseHeader"><strong>Description</strong></p>
+<div class="SectionText">
+<p>Core of the solution is Client Side GPO extension (CSE) with the following functionality:</p>
+<ul>
+<li>Triggered by GPO refresh event, checks the age of password of builtin Administrator account
+</li><li>When the local Administrator&rsquo;s password is older than configured, CSE generates the new random password according the configured criteria (length, complexity), so password is different on each computer
+</li><li>CSE then sets the password of builtin Administrator account to newly generated value
+</li><li>CSE then reports the new password to confidential attribute of computer account in AD
+<ul>
+<li>Password is protected by Kerberos encryption when transferred over the network
+</li></ul>
+</li><li>CSE also reports the&nbsp;password expiration&nbsp;time to attribute of computer account
+</li></ul>
+<p>Eligible users from IT support are granted the permission to read the confidential attribute and know the password when necessary</p>
+<p>Solution relies on 2 new attributes introduced to the AD schema and added to property set of computer objects:</p>
+<ul>
+<li>Confidential attribute that stores admin password
+<ul>
+<li><em>Note</em>: Confidential attributes has been feature of Active Directory since Windows 2003 SP1
+</li></ul>
+</li><li>Numeric attribute that stores timestamp of last password change </li></ul>
+<p>So it is easy to force the reset of the admin password simply by deleting the value of timestamp attribute on computer account, password is then reset on next GPO refresh</p>
+<p>People with appropriate permission the can read password from AD via any tool of choice (adsiedit, etc.), or using custom tool &ndash; this sample contains the following samples hosw to read the password:</p>
+<ul>
+<li>.NET Form UI </li><li>Powershell module </li><li>Web application that uses Kerberos Constrained Delegation (KCD) when talking to AD
+</li></ul>
+<p>For detailed description and instructions how to use the solution, see, attached documentation (<span id="96116">Documentation.zip</span>) to this article.</p>
+</div>
+<div class="SectionText"></div>
+
+</div>
+
+
+    </div>
+</body>
+</html>
